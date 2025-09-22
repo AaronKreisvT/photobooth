@@ -1,0 +1,12 @@
+Options -Indexes
+
+<FilesMatch "\.(jpg|jpeg)$">
+    Require all granted
+</FilesMatch>
+
+AddType image/jpeg .jpg .jpeg
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phps
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fotobox Aaron Kreis v.T.</title>
+  <meta name="description" content="Fotobox von Aaron Kreis v.T.">
+  <meta name="keywords" content="Aaron Kreis v.T., UdS, Saarland, Physik">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    header {
+      background-color: #3A506B;
+      color: white;
+      padding: 1em 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 2.8em;
+      margin: 0.2em 0 0 0;
+    }
+    header h2 {
+      font-size: 1.2em;
+      margin: 0;
+      font-weight: normal;
+      color: #D9E6F2;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1em;
+      padding: 0.5em;
+    }
+    nav a {
+      font-size: 1.1em;
+      text-decoration: none;
+      color: white;
+      padding: 0.6em 1.2em;
+      background-color: #1C2541;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+    nav a:hover {
+      background-color: #5BC0BE;
+      color: #1C2541;
+    }
+    main {
+      padding: 2em;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 2em auto;
+      max-width: 1000px;
+      border-radius: 8px;
+    }
+    input[type="text"] {
+      font-size: 1.5em;
+      padding: 0.5em;
+      width: 10ch;
+      text-align: center;
+    }
+    button {
+      font-size: 1.2em;
+      padding: 0.5em 1em;
+      margin-top: 1em;
+      background-color: #3A506B;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #5BC0BE;
+      color: #1C2541;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 1em;
+    }
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 2em;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fotobox</h1>
+    <h2>Aaron Kreis v.T.</h2>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="datenschutz.html">Datenschutzerklärung</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Gib deinen Bildcode ein</h2>
+    <form id="codeForm">
+      <input type="text" id="codeInput" maxlength="9" placeholder="ABCD-EFGH" autofocus />
+      <br>
+      <button type="submit">Bild anzeigen</button>
+    </form>
+    <div class="error" id="error"></div>
+    <div class="image-container" id="imageContainer"></div>
+  </main>
+
+  <script>
+    const form = document.getElementById('codeForm');
+    const input = document.getElementById('codeInput');
+    const error = document.getElementById('error');
+    const container = document.getElementById('imageContainer');
+
+    input.addEventListener('input', () => {
+      let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (val.length > 4) val = val.slice(0, 4) + '-' + val.slice(4);
+      input.value = val;
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = input.value.trim();
+      error.textContent = '';
+      container.innerHTML = '';
+
+      if (!/^([A-Z0-9]{4}-[A-Z0-9]{4})$/.test(code)) {
+        error.innerHTML = '⚠️ Bitte gib einen gültigen 8-stelligen Code im Format ABCD-EFGH ein ⚠️';
+        return;
+      }
+
+      const img = document.createElement('img');
+      img.src = `bilder/${code}.jpg`;
+      img.alt = `Bild ${code}`;
+      img.onload = () => {
+        const download = document.createElement('a');
+        download.href = img.src;
+        download.download = `${code}.jpg`;
+        download.innerText = 'Bild herunterladen';
+        download.className = 'button';
+        download.style.display = 'inline-block';
+        download.style.marginTop = '1em';
+        download.style.fontWeight = 'bold';
+        download.style.color = 'white';
+        download.style.backgroundColor = '#3A506B';
+        download.style.padding = '0.5em 1em';
+        download.style.borderRadius = '4px';
+        download.style.textDecoration = 'none';
+        download.style.transition = 'background-color 0.3s ease';
+        download.onmouseover = () => download.style.backgroundColor = '#5BC0BE';
+        download.onmouseout = () => download.style.backgroundColor = '#3A506B';
+
+        container.appendChild(img);
+        container.appendChild(download);
+      };
+      img.onerror = () => {
+        error.innerHTML = '⚠️ Kein Bild gefunden für diesen Code ⚠️';
+      };
+    });
+
+    // URL-Parameter automatisch verarbeiten
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code')) {
+      const codeParam = params.get('code').toUpperCase();
+      if (/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(codeParam)) {
+        input.value = codeParam;
+        form.dispatchEvent(new Event('submit'));
+      }
+    }
+  </script>
+</body>
+</html>
