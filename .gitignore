@@ -1,4 +1,4 @@
-# Bilder / temporäre Fotos
+# Images / temporary Images
 photos/
 photos-tmp/
 *.jpg
@@ -27,11 +27,6 @@ settings.json
 *.zip
 
 # templates
-assets/templates/julia
-assets/templates/MonikaThomas
-assets/templates/britta60
-assets/templates/silvana
-assets/templates/partyballoons
-
-# gitfiles
-.git*
+assets/templates/*
+!assets/templates/example/
+!assets/templates/example/**
