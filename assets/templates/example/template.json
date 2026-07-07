@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "variants": {
+    "1": {
+      "slots_px": [[[215, 988], [1585, 75]]],
+      "text_fields_px": {
+        "line1": {"pos": [922, 1105], "font_px": 80, "anchor": "mm", "max_width": 1600},
+        "line2": {"pos": [922, 1185], "font_px": 56, "anchor": "mm", "max_width": 1600}
+      }
+    },
+    "2": {
+      "slots_px": [
+        [[110, 207], [1090, 850]],
+        [[110, 892], [1090, 1547]]
+      ],
+      "text_fields_px": {
+        "line1": {"pos": [622, 931],  "font_px": 80, "anchor": "mm", "max_width": 1000},
+        "line2": {"pos": [622, 1011], "font_px": 56, "anchor": "mm", "max_width": 1000}
+      }
+    },
+    "4": {
+      "slots_px": [
+        [[210, 74], [883, 514]],
+        [[210, 550], [883, 990]],
+        [[917, 74], [1590, 514]],
+        [[917, 550], [1590, 990]]
+      ],
+      "text_fields_px": {
+        "line1": {"pos": [922, 580], "font_px": 80, "anchor": "mm", "max_width": 1400},
+        "line2": {"pos": [922, 660], "font_px": 56, "anchor": "mm", "max_width": 1400}
+      }
+    }
+  }
+}
+
