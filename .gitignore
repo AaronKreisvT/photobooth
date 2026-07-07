@@ -1,0 +1,34 @@
+# Bilder / temporäre Fotos
+photos/
+photos-tmp/
+*.jpg
+*.jpeg
+*.png
+*.heic
+*.mp4
+*.mov
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Lokale/variable Daten
+printer_stats.json
+settings.json
+
+# Secrets / lokale Umgebung
+.env
+.envrc
+
+# temporary
+*.log
+*.zip
+
+# templates
+assets/templates/julia
+assets/templates/MonikaThomas
+assets/templates/britta60
+assets/templates/silvana
+assets/templates/partyballoons
