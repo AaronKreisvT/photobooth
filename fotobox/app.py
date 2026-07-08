@@ -463,6 +463,12 @@ def run():
             if event.key() == Qt.Key.Key_F2:
                 self.w._open_settings()
                 return True
+            if event.key() == Qt.Key.Key_F5:
+                return True
+            if event.key() == Qt.Key.Key_F6:
+                return True
+            if event.key() == Qt.Key.Key_F7:
+                return True
         return False
 
     key_filter = KeyFilter(w)
