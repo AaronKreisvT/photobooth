@@ -464,10 +464,13 @@ def run():
                 self.w._open_settings()
                 return True
             if event.key() == Qt.Key.Key_F5:
+                self.w._start_capture_flow(1)
                 return True
             if event.key() == Qt.Key.Key_F6:
+                self.w._start_capture_flow(2)
                 return True
             if event.key() == Qt.Key.Key_F7:
+                self.w._start_capture_flow(4)
                 return True
         return False
 
