@@ -181,7 +181,7 @@ class FotoboxApp(QStackedWidget):
       print("[CAPTURE] Capture failed:\n", msg)
 
       # Retry once if device busy / I/O in progress
-      busy = ("PTP Device Busy" in msg) or ("I/O in progress" in msg) or ("-110" in msg)
+      busy = ("PTP Device Busy" in msg) or ("I/O in progress" in msg) or ("-110" in msg) or ("exit=9" in msg)
 
       if busy and getattr(self, "_capture_retry_count", 0) < 1:
         self._capture_retry_count += 1
