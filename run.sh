@@ -13,6 +13,8 @@ xset -cursor_name none || true
 
 bash "$SCRIPT_DIR/init_camera.sh"
 
+bash "$SCRIPT_DIR/tools/reset_printer.sh" DS620
+
 #PYTHONUNBUFFERED=1 "$SCRIPT_DIR/venv/bin/python" -u \
 #  "$SCRIPT_DIR/tools/calibrate_overlay.py" \
 #  "$SCRIPT_DIR/assets/splash.png" \
