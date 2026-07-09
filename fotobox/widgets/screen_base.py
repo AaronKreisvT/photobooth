@@ -65,6 +65,15 @@ class ScreenBase(QWidget):
             px = int(event.position().x())
             py = int(event.position().y())
             z = self._hit_zone(px, py)
+
+            if os.environ.get("FOTOBOX_DEBUG_CLICKS") == "1":
+              print(
+                f"[CLICK] {self.__class__.__name__} "
+                f"x={px} y={py} "
+                f"zone={z.name if z else None}",
+                flush=True,
+              )
+
             if z and z.on_click:
                 z.on_click()
                 return

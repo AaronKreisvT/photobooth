@@ -478,7 +478,10 @@ def run():
 
     # Fullscreen kiosk style:
     w.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
-    w.showFullScreen()
+    if os.environ.get("FOTOBOX_WINDOWED") == "1":
+      w.show()
+    else:
+      w.showFullScreen()
 
     # global input filter
     def any_input(event):
