@@ -97,7 +97,7 @@ echo "[CAMERA] ISO settings..."
 #
 # ISO 800 is a good starting point for indoor photobooth use:
 # much safer shutter times than ISO 100, still acceptable noise.
-set_cam_index /main/imgsettings/iso 21 || true
+set_cam_index /main/imgsettings/iso 18 || true
 
 echo "[CAMERA] White balance..."
 
