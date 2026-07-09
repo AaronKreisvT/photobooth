@@ -150,6 +150,11 @@ class FotoboxApp(QStackedWidget):
         self._end_timer.setSingleShot(True)
         self._end_timer.timeout.connect(self._back_to_main)
 
+        # Timeout while waiting between multiple captures
+        self._between_shots_timer = QTimer(self)
+        self._between_shots_timer.setSingleShot(True)
+        self._between_shots_timer.timeout.connect(self._abort_capture_session)
+
         # Show main
         self._go(AppState.MAIN)
 
@@ -172,10 +177,41 @@ class FotoboxApp(QStackedWidget):
       if len(self.session.captured_paths) < self.session.requested_photos:
         self._go(AppState.PREVIEW)
         # Countdown erneut starten (wie auch immer deine PreviewScreen API ist)
-        self.screen_preview.start(seconds=self.settings.PREVIEW_COUNTDOWN_SECONDS)
-      else:
-        # alle Bilder da -> weiterverarbeiten
-        self._finish_processing()
+        self.screen_preview.wait_for_next(self._continue_after_between_shots)
+        self._between_shots_timer.start(120_000)
+        return
+      # alle Bilder da -> weiterverarbeiten
+      self._finish_processing()
+
+    def _continue_after_between_shots(self):
+      self._between_shots_timer.stop()
+
+      if self.state != AppState.PREVIEW:
+        return
+
+      self.screen_preview.start(seconds=self.settings.PREVIEW_COUNTDOWN_SECONDS)
+
+
+    def _abort_capture_session(self):
+      print("[CAPTURE] Session aborted: no input between shots.")
+
+      self.screen_preview.stop()
+
+      for p in self.session.captured_paths:
+        try:
+          if p and os.path.exists(p):
+            os.remove(p)
+        except Exception as e:
+          print(f"[CAPTURE] Could not delete temp capture {p}: {e}")
+
+      self.session = Session(
+        requested_photos=1,
+        captured_paths=[],
+        final_path=None,
+        print_copies=0,
+      )
+
+      self._back_to_main()
 
     def _on_capture_error(self, msg: str):
       print("[CAPTURE] Capture failed:\n", msg)
@@ -274,6 +310,7 @@ class FotoboxApp(QStackedWidget):
 
     # ---------- main flow ----------
     def _start_capture_flow(self, n: int):
+        self._between_shots_timer.stop()
         self.session = Session(requested_photos=n, captured_paths=[], final_path=None, print_copies=0)
         self._begin_next_preview()
 
@@ -379,6 +416,7 @@ class FotoboxApp(QStackedWidget):
         QTimer.singleShot(1500, self._back_to_main)
 
     def _back_to_main(self):
+        self._between_shots_timer.stop()
         self._go(AppState.MAIN)
 
     # ---------- screensaver ----------

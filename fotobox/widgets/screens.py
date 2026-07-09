@@ -7,7 +7,7 @@ from PyQt6.QtGui import QPixmap, QPainter, QFont, QImage
 from PyQt6.QtWidgets import QWidget, QLabel
 
 from .screen_base import ScreenBase, Zone
-from ..geometry import rel_to_abs
+from ..geometry import rel_to_abs, RectRel
 from ..config import Zones
 from .video_player import make_video_widget
 
@@ -59,11 +59,14 @@ class PreviewScreen(ScreenBase):
         self._on_done = None  # callback
         self._qimg = None
 
+        self._waiting_for_next = False
+        self._on_next = None
         # WICHTIG: QWidget/ScreenBase zuerst initialisieren!
         super().__init__(
             bg_path=os.path.join(assets_root, "assets/preview.png"),
             zones=[
                 Zone("PREVIEW: feed frame", zones.preview_feed_frame, on_click=None, is_frame=True),
+                Zone("PREVIEW: tap for next", RectRel(0, 0, 1, 1), on_click=self._handle_next_touch),
             ],
             fixed_w=fixed_w,
             fixed_h=fixed_h,
@@ -76,6 +79,8 @@ class PreviewScreen(ScreenBase):
         self._countdown_timer.timeout.connect(self._on_countdown_tick)
 
     def start(self, seconds: int = 3):
+        self._waiting_for_next = False
+        self._on_next = False
         self._countdown = seconds
         self._tick = 0
         self._countdown_timer.start()
@@ -83,6 +88,26 @@ class PreviewScreen(ScreenBase):
 
     def stop(self):
         self._countdown_timer.stop()
+        self._waiting_for_next = False
+        self._on_next = None
+
+    def wait_for_next(self, cb):
+        self.stop()
+        self._waiting_for_next = True
+        self._on_next = cb
+        self._countdown = 0
+        self.update()
+
+    def _handle_next_touch(self):
+        if not self._waiting_for_next:
+            return
+
+        cb = self._on_next
+        self._waiting_for_next = False
+        self._on_next = None
+
+        if cb:
+            cb()
 
     def set_on_done(self, cb):
         self._on_done = cb
@@ -129,16 +154,23 @@ class PreviewScreen(ScreenBase):
         p.drawRect(QRect(x, y, w, h))
         p.drawText(x + 20, y + 40, "LIVE...")
 
+      # ---- WAIT FOR NEXT SHOT ----
+      if self._waiting_for_next:
+        p.setFont(QFont("DejaVu Sans", 48))
+        p.setPen(Qt.GlobalColor.white)
+        p.drawText(
+          QRect(0, 0, self.width(), self.height()),
+          Qt.AlignmentFlag.AlignCenter,
+          "Tippen für das\nnächste Bild",
+        )
+
       # ---- COUNTDOWN ----
-      if self._countdown > 0:
+      elif self._countdown > 0:
         p.setFont(QFont("DejaVu Sans", 96))
         p.setPen(Qt.GlobalColor.white)
-        p.drawText(QRect(x, y, w, h),
-                   Qt.AlignmentFlag.AlignCenter,
-                   str(self._countdown))
+        p.drawText(QRect(x, y, w, h), Qt.AlignmentFlag.AlignCenter, str(self._countdown))
 
       p.end()
-
 class ProcessingScreen(ScreenBase):
     def __init__(self, fixed_w: int, fixed_h: int, assets_root: str, parent=None):
         super().__init__(
