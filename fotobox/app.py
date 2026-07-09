@@ -168,7 +168,7 @@ class FotoboxApp(QStackedWidget):
       self._capture_retry_count = 0
 
       # Small delay to let PTP settle after stopping movie stream
-      QTimer.singleShot(300, lambda: self.cam.capture_image(self._current_capture_path, keep_on_camera=True))
+      QTimer.singleShot(500, lambda: self.cam.capture_image(self._current_capture_path, keep_on_camera=True))
 
     def _on_capture_done(self, path: str):
       self.session.captured_paths.append(path)
