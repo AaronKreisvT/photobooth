@@ -65,7 +65,7 @@ echo "[CAMERA] Exposure settings..."
 # The physical mode dial should be on A.
 # In A mode, f-number is writable.
 # For your current zoom position, index 3 = f/5.6.
-set_cam_index /main/capturesettings/f-number 0 || true
+set_cam_index /main/capturesettings/f-number 3 || true
 
 # Exposure metering:
 # Your available options:
@@ -97,7 +97,7 @@ echo "[CAMERA] ISO settings..."
 #
 # ISO 800 is a good starting point for indoor photobooth use:
 # much safer shutter times than ISO 100, still acceptable noise.
-set_cam_index /main/imgsettings/iso 18 || true
+set_cam_index /main/imgsettings/iso 12 || true
 
 echo "[CAMERA] White balance..."
 
